@@ -1,0 +1,64 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div>
+    <fieldset>
+        <legend>Log</legend>
+        <textarea id="txtLog" cols="60" rows="15"></textarea>
+    </fieldset>
+</div>
+
+
+@section Scripts{
+
+
+    <script type="text/javascript">
+
+        "use strict";
+
+        /*https://docs.microsoft.com/it-it/aspnet/core/tutorials/signalr?view=aspnetcore-3.1&tabs=visual-studio */
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5000/hubs/clock").build();
+
+        ////Disable send button until connection is established
+        //document.getElementById("sendButton").disabled = true;
+
+        connection.on("ShowTime", function (datetime) {
+            //var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            //var encodedMsg = user + " says " + msg;
+
+            writeToLog(datetime);
+        });
+
+        connection.start().then(function () {
+
+            console.log("Connected");
+
+        }).catch(function (err) {
+
+            console.log(err.toString());
+            return console.error(err.toString());
+
+        });
+
+        //document.getElementById("sendButton").addEventListener("click", function (event) {
+        //    var user = document.getElementById("userInput").value;
+        //    var message = document.getElementById("messageInput").value;
+        //    connection.invoke("SendMessage", user, message).catch(function (err) {
+        //        return console.error(err.toString());
+        //    });
+        //    event.preventDefault();
+        //});
+
+        function writeToLog(log) {
+            console.log(log);
+
+            $("#txtLog").append(log + "&#10;&#13;")
+        }
+
+    </script>
+
+}
